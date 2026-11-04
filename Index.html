@@ -1,0 +1,489 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#071522">
+<title>Reef Control | Reefer 250</title>
+<style>
+:root {
+  --bg:#071522; --panel:#102638; --panel2:#163247;
+  --blue:#39bce5; --cyan:#74d9ed; --green:#43d69b;
+  --orange:#f4b75c; --red:#ff7777; --text:#e8f3fa;
+  --muted:#92a9b9; --line:#254356;
+}
+* {box-sizing:border-box}
+body {
+  margin:0; background:var(--bg); color:var(--text);
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  font-size:15px; padding-bottom:85px;
+}
+header {
+  padding:23px 18px 17px;
+  background:linear-gradient(135deg,#0b3045,#071522);
+  border-bottom:1px solid var(--line);
+}
+.brand {font-size:23px;font-weight:800;letter-spacing:2px}
+.subtitle {color:var(--muted);font-size:12px;margin-top:5px}
+.headerline {display:flex;justify-content:space-between;align-items:center}
+.pill {font-size:11px;padding:6px 10px;border-radius:20px;
+  background:#193e42;color:var(--green)}
+main {max-width:850px;margin:auto;padding:16px}
+.page {display:none}
+.page.active {display:block}
+h2 {font-size:19px;margin:7px 0 15px}
+h3 {font-size:14px;margin:0 0 12px}
+.grid {display:grid;grid-template-columns:1fr 1fr;gap:11px}
+.card {
+  background:var(--panel);border:1px solid var(--line);
+  border-radius:13px;padding:15px;margin-bottom:12px;
+}
+.metric-label {font-size:12px;color:var(--muted)}
+.metric-value {font-size:26px;font-weight:700;margin:7px 0}
+.metric-unit {font-size:12px;color:var(--muted)}
+.small {font-size:12px;color:var(--muted)}
+.section-title {margin:23px 0 11px;font-size:15px;font-weight:700}
+.row {display:flex;justify-content:space-between;align-items:center;gap:10px}
+.status {font-size:11px;padding:5px 9px;border-radius:20px;
+  background:#263b49;color:var(--muted);white-space:nowrap}
+.status.running {background:#153c35;color:var(--green)}
+.status.warning {background:#493820;color:var(--orange)}
+button,select,input {
+  font:inherit;
+}
+button {
+  border:0;border-radius:9px;padding:11px 14px;
+  background:var(--blue);color:#052033;font-weight:700;
+}
+button.secondary {background:var(--panel2);color:var(--text);
+  border:1px solid var(--line)}
+button.danger {background:#4b292d;color:#ffaaaa}
+input,select {
+  width:100%;padding:12px;background:#071c2b;
+  border:1px solid var(--line);border-radius:8px;
+  color:var(--text);margin:6px 0 13px;
+}
+label {font-size:12px;color:var(--muted)}
+.formgrid {display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.device {padding:13px 0;border-bottom:1px solid var(--line)}
+.device:last-child {border:0}
+.device-name {font-weight:600;font-size:14px}
+.device-type {font-size:11px;color:var(--muted);margin-top:4px}
+.device select {width:125px;margin:0;padding:8px;font-size:12px}
+.maintenance {padding:12px 0;border-bottom:1px solid var(--line)}
+.maintenance input {width:auto;margin:0 8px 0 0}
+.maintenance label {font-size:14px;color:var(--text)}
+nav {
+  position:fixed;bottom:0;left:0;right:0;
+  display:flex;justify-content:space-around;
+  background:#0c2030;border-top:1px solid var(--line);
+  padding:9px 3px max(9px,env(safe-area-inset-bottom));
+  z-index:10;
+}
+nav button {
+  background:transparent;color:var(--muted);
+  padding:8px 4px;font-size:10px;flex:1;
+}
+nav button.active {color:var(--cyan)}
+nav span {display:block;font-size:20px;margin-bottom:4px}
+.chart {width:100%;height:180px;display:block}
+.chart text {fill:var(--muted);font-size:10px}
+.chart line {stroke:var(--line);stroke-width:1}
+.chart polyline {fill:none;stroke:var(--blue);stroke-width:2.5}
+.empty {color:var(--muted);font-size:13px;padding:20px 5px;text-align:center}
+.note {font-size:11px;color:var(--muted);line-height:1.5}
+.actions {display:flex;gap:8px;flex-wrap:wrap}
+.actions button {flex:1}
+@media(min-width:650px) {
+  main {padding:22px}
+  .grid {grid-template-columns:repeat(4,1fr)}
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="headerline">
+    <div>
+      <div class="brand">REEF CONTROL</div>
+      <div class="subtitle">RED SEA REEFER 250 · 250 L</div>
+    </div>
+    <div class="pill">● PERSONAL DASHBOARD</div>
+  </div>
+</header>
+
+<main>
+
+<section id="overview" class="page active">
+  <h2>Aquarium overview</h2>
+  <div class="grid" id="metrics"></div>
+
+  <div class="section-title">Equipment status</div>
+  <div class="card" id="overviewEquipment"></div>
+
+  <div class="section-title">Recent measurements</div>
+  <div class="card" id="recentMeasurements"></div>
+
+  <div class="section-title">Next maintenance</div>
+  <div class="card" id="overviewMaintenance"></div>
+  <p class="note">Equipment status is manually maintained in this version. No live connection to manufacturer controllers is established.</p>
+</section>
+
+<section id="parameters" class="page">
+  <h2>Water parameters</h2>
+  <div class="card">
+    <h3>Record a measurement</h3>
+    <label for="parameter">Parameter</label>
+    <select id="parameter">
+      <option value="Temperature">Temperature</option>
+      <option value="Alkalinity">Alkalinity</option>
+      <option value="Calcium">Calcium</option>
+      <option value="Magnesium">Magnesium</option>
+      <option value="Nitrate">Nitrate</option>
+      <option value="Phosphate">Phosphate</option>
+      <option value="pH">pH</option>
+      <option value="Salinity">Salinity</option>
+    </select>
+    <label for="reading">Reading</label>
+    <input id="reading" type="number" step="any" placeholder="Enter measurement">
+    <label for="readingDate">Date</label>
+    <input id="readingDate" type="date">
+    <button onclick="saveReading()" style="width:100%">Save measurement</button>
+  </div>
+
+  <div class="card">
+    <h3>Measurement history</h3>
+    <label for="chartParameter">Choose parameter</label>
+    <select id="chartParameter" onchange="drawChart()">
+      <option>Temperature</option><option>Alkalinity</option>
+      <option>Calcium</option><option>Magnesium</option>
+      <option>Nitrate</option><option>Phosphate</option>
+      <option>pH</option><option>Salinity</option>
+    </select>
+    <div id="chartArea"></div>
+  </div>
+  <div class="card">
+    <h3>All recorded measurements</h3>
+    <div id="measurementHistory"></div>
+  </div>
+</section>
+
+<section id="equipment" class="page">
+  <h2>Equipment management</h2>
+  <p class="note">Update the status manually. These controls do not switch equipment on or off.</p>
+  <div class="card" id="equipmentList"></div>
+</section>
+
+<section id="maintenance" class="page">
+  <h2>Maintenance</h2>
+  <div class="card">
+    <h3>Add a maintenance task</h3>
+    <label for="taskName">Task description</label>
+    <input id="taskName" placeholder="e.g. Clean MP40 wet side">
+    <label for="taskDate">Due date</label>
+    <input id="taskDate" type="date">
+    <button onclick="addTask()" style="width:100%">Add task</button>
+  </div>
+  <div class="card">
+    <h3>Maintenance checklist</h3>
+    <div id="taskList"></div>
+  </div>
+</section>
+
+<section id="settings" class="page">
+  <h2>Settings & backup</h2>
+  <div class="card">
+    <h3>Data backup</h3>
+    <p class="note">Export your measurements, equipment statuses and maintenance records as a JSON file. Keep a backup somewhere safe.</p>
+    <button onclick="exportData()" style="width:100%">Export aquarium data</button>
+    <br><br>
+    <label for="importFile">Restore from backup</label>
+    <input type="file" id="importFile" accept=".json,application/json">
+    <button class="secondary" onclick="importData()" style="width:100%">Import backup</button>
+  </div>
+  <div class="card">
+    <h3>About this dashboard</h3>
+    <p class="note">Reef Control version 1.0<br>Designed for iPad Air 2 and Safari.<br>Data is saved in this browser on this iPad.</p>
+    <button class="danger" onclick="clearData()">Clear all dashboard data</button>
+  </div>
+</section>
+
+</main>
+
+<nav>
+  <button class="active" onclick="showPage('overview',this)"><span>⌂</span>Overview</button>
+  <button onclick="showPage('parameters',this)"><span>◉</span>Water</button>
+  <button onclick="showPage('equipment',this)"><span>⚙</span>Equipment</button>
+  <button onclick="showPage('maintenance',this)"><span>✓</span>Tasks</button>
+  <button onclick="showPage('settings',this)"><span>☰</span>Settings</button>
+</nav>
+
+<script>
+var devices = [
+  ["Red Sea ReefMat","Filtration"],
+  ["Red Sea ReefDose","Dosing"],
+  ["Xepta autoBalance","Water chemistry"],
+  ["Reef Factory Level Keeper","ATO / water level"],
+  ["AI lights","Lighting"],
+  ["Ecotech Vectra S2","Return pump"],
+  ["Ecotech MP40 1","Wavemaker"],
+  ["Ecotech MP40 2","Wavemaker"],
+  ["INKBIRD temperature controller","Temperature"]
+];
+
+var names = ["Temperature","Alkalinity","Calcium","Magnesium",
+             "Nitrate","Phosphate","pH","Salinity"];
+
+var units = {
+  Temperature:"°C", Alkalinity:"dKH", Calcium:"ppm",
+  Magnesium:"ppm", Nitrate:"ppm", Phosphate:"ppm",
+  pH:"", Salinity:"ppt"
+};
+
+var data = {
+  readings:[], statuses:{}, tasks:[]
+};
+
+function loadData() {
+  try {
+    var saved = localStorage.getItem("reefControlData");
+    if(saved) {
+      var parsed = JSON.parse(saved);
+      if(parsed && parsed.readings && parsed.statuses && parsed.tasks)
+        data = parsed;
+    }
+  } catch(e) {}
+}
+
+function saveData() {
+  try {
+    localStorage.setItem("reefControlData",JSON.stringify(data));
+  } catch(e) {
+    alert("Unable to save data. Please export a backup.");
+  }
+}
+
+function today() {
+  var d = new Date();
+  return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+
+    "-"+String(d.getDate()).padStart(2,"0");
+}
+
+function showPage(id,button) {
+  var pages = document.querySelectorAll(".page");
+  for(var i=0;i<pages.length;i++) pages[i].classList.remove("active");
+  document.getElementById(id).classList.add("active");
+  var buttons = document.querySelectorAll("nav button");
+  for(var j=0;j<buttons.length;j++) buttons[j].classList.remove("active");
+  button.classList.add("active");
+  renderAll();
+}
+
+function latest(name) {
+  var matches = data.readings.filter(function(r){return r.name===name;});
+  matches.sort(function(a,b){return b.date.localeCompare(a.date);});
+  return matches.length ? matches[0] : null;
+}
+
+function saveReading() {
+  var name = document.getElementById("parameter").value;
+  var value = parseFloat(document.getElementById("reading").value);
+  var date = document.getElementById("readingDate").value;
+  if(!isFinite(value) || !date) {
+    alert("Please enter a valid measurement and date.");
+    return;
+  }
+  data.readings.push({name:name,value:value,date:date});
+  saveData();
+  document.getElementById("reading").value="";
+  renderAll();
+  alert("Measurement saved.");
+}
+
+function renderMetrics() {
+  var html="";
+  ["Temperature","Alkalinity","Nitrate","Phosphate"].forEach(function(n){
+    var r=latest(n);
+    html+='<div class="card"><div class="metric-label">'+n+
+      '</div><div class="metric-value">'+(r?r.value:"—")+
+      '</div><div class="metric-unit">'+(units[n]||"")+
+      (r?" · "+r.date:" · Not recorded")+'</div></div>';
+  });
+  document.getElementById("metrics").innerHTML=html;
+}
+
+function renderEquipment() {
+  var html="";
+  devices.forEach(function(d,i){
+    var status=data.statuses[i]||"Unknown";
+    var cls=status==="Running"||status==="Active"?"running":
+      status==="Needs attention"?"warning":"";
+    html+='<div class="device"><div class="row"><div>'+
+      '<div class="device-name">'+d[0]+'</div>'+
+      '<div class="device-type">'+d[1]+'</div></div>'+
+      '<select onchange="setStatus('+i+',this.value)">'+
+      ["Unknown","Running","Active","Standby","Needs attention","Offline"]
+      .map(function(s){return '<option '+(s===status?"selected":"")+
+        '>'+s+'</option>';}).join("")+
+      '</select></div></div>';
+  });
+  document.getElementById("equipmentList").innerHTML=html;
+  var summary="";
+  devices.forEach(function(d,i){
+    var s=data.statuses[i]||"Unknown";
+    summary+='<div class="row" style="padding:7px 0"><span>'+
+      d[0]+'</span><span class="status '+(s==="Running"||s==="Active"?"running":s==="Needs attention"?"warning":"")+
+      '">'+s+'</span></div>';
+  });
+  document.getElementById("overviewEquipment").innerHTML=summary;
+}
+
+function setStatus(i,s) {
+  data.statuses[i]=s;
+  saveData();
+  renderAll();
+}
+
+function renderReadings() {
+  var sorted=data.readings.slice().sort(function(a,b){return b.date.localeCompare(a.date);});
+  var html="";
+  sorted.slice(0,8).forEach(function(r){
+    html+='<div class="row" style="padding:7px 0"><span>'+
+      r.name+'</span><strong>'+r.value+' '+(units[r.name]||"")+
+      '</strong><span class="small">'+r.date+'</span></div>';
+  });
+  document.getElementById("recentMeasurements").innerHTML=
+    html||'<div class="empty">No measurements recorded yet.</div>';
+
+  var history="";
+  sorted.forEach(function(r,i){
+    history+='<div class="row" style="padding:8px 0;border-bottom:1px solid var(--line)">'+
+      '<span>'+r.date+' · '+r.name+'</span><strong>'+r.value+' '+
+      (units[r.name]||"")+'</strong><button class="danger" style="padding:5px 8px" onclick="deleteReading('+i+')">×</button></div>';
+  });
+  document.getElementById("measurementHistory").innerHTML=
+    history||'<div class="empty">Your history will appear here.</div>';
+}
+
+function deleteReading(index) {
+  if(!confirm("Delete this measurement?")) return;
+  var sorted=data.readings.slice().sort(function(a,b){return b.date.localeCompare(a.date);});
+  var item=sorted[index];
+  var actual=data.readings.indexOf(item);
+  if(actual>=0) data.readings.splice(actual,1);
+  saveData();renderAll();
+}
+
+function drawChart() {
+  var name=document.getElementById("chartParameter").value;
+  var records=data.readings.filter(function(r){return r.name===name;});
+  records.sort(function(a,b){return a.date.localeCompare(b.date);});
+  if(!records.length) {
+    document.getElementById("chartArea").innerHTML=
+      '<div class="empty">No '+name+' measurements yet.</div>';
+    return;
+  }
+  records=records.slice(-20);
+  var values=records.map(function(r){return r.value;});
+  var min=Math.min.apply(null,values), max=Math.max.apply(null,values);
+  if(min===max){min-=1;max+=1;}
+  var points=records.map(function(r,i){
+    var x=35+(i*290/Math.max(1,records.length-1));
+    var y=145-((r.value-min)/(max-min))*110;
+    return x+","+y;
+  }).join(" ");
+  var svg='<svg class="chart" viewBox="0 0 340 180" preserveAspectRatio="none">';
+  [35,90,145].forEach(function(y){
+    svg+='<line x1="30" y1="'+y+'" x2="330" y2="'+y+'"/>';
+  });
+  svg+='<polyline points="'+points+'"/>';
+  svg+='<text x="2" y="38">'+max.toFixed(2)+'</text>';
+  svg+='<text x="2" y="147">'+min.toFixed(2)+'</text>';
+  svg+='</svg>';
+  svg+='<div class="small">Last '+records.length+' measurements · '+units[name]+'</div>';
+  document.getElementById("chartArea").innerHTML=svg;
+}
+
+function addTask() {
+  var name=document.getElementById("taskName").value.trim();
+  var date=document.getElementById("taskDate").value;
+  if(!name||!date){alert("Enter a task and due date.");return;}
+  data.tasks.push({name:name,date:date,done:false});
+  document.getElementById("taskName").value="";
+  saveData();renderAll();
+}
+
+function renderTasks() {
+  var html="";
+  data.tasks.sort(function(a,b){return a.date.localeCompare(b.date);});
+  data.tasks.forEach(function(t,i){
+    html+='<div class="maintenance row"><label style="flex:1">'+
+      '<input type="checkbox" '+(t.done?"checked":"")+
+      ' onchange="toggleTask('+i+',this.checked)">'+
+      (t.done?"<s>"+t.name+"</s>":t.name)+
+      '<div class="small">'+t.date+'</div></label>'+
+      '<button class="danger" style="padding:6px 9px" onclick="deleteTask('+i+')">×</button></div>';
+  });
+  document.getElementById("taskList").innerHTML=
+    html||'<div class="empty">No maintenance tasks yet.</div>';
+
+  var pending=data.tasks.filter(function(t){return !t.done;});
+  document.getElementById("overviewMaintenance").innerHTML=
+    pending.length?pending.slice(0,4).map(function(t){
+      return '<div class="row" style="padding:6px 0"><span>'+
+        t.name+'</span><span class="small">'+t.date+'</span></div>';
+    }).join(""):'<div class="empty">No outstanding tasks.</div>';
+}
+
+function toggleTask(i,v) {
+  data.tasks[i].done=v;saveData();renderAll();
+}
+function deleteTask(i) {
+  if(!confirm("Delete this task?"))return;
+  data.tasks.splice(i,1);saveData();renderAll();
+}
+
+function exportData() {
+  var blob=new Blob([JSON.stringify(data,null,2)],{type:"application/json"});
+  var url=URL.createObjectURL(blob);
+  var a=document.createElement("a");
+  a.href=url;a.download="reef-aquarium-backup.json";
+  document.body.appendChild(a);a.click();a.remove();
+  setTimeout(function(){URL.revokeObjectURL(url);},1000);
+}
+
+function importData() {
+  var file=document.getElementById("importFile").files[0];
+  if(!file){alert("Choose a backup file first.");return;}
+  var reader=new FileReader();
+  reader.onload=function(){
+    try {
+      var imported=JSON.parse(reader.result);
+      if(!imported.readings||!imported.statuses||!imported.tasks)
+        throw new Error("Invalid backup");
+      if(!confirm("Replace your current dashboard data with this backup?"))return;
+      data=imported;saveData();renderAll();alert("Backup restored.");
+    } catch(e){alert("Could not read this backup file.");}
+  };
+  reader.readAsText(file);
+}
+
+function clearData() {
+  if(!confirm("Permanently clear all measurements, statuses and tasks? Export a backup first if needed."))return;
+  data={readings:[],statuses:{},tasks:[]};
+  saveData();renderAll();
+}
+
+function renderAll() {
+  renderMetrics();renderEquipment();renderReadings();
+  renderTasks();drawChart();
+}
+
+loadData();
+document.getElementById("readingDate").value=today();
+document.getElementById("taskDate").value=today();
+renderAll();
+</script>
+</body>
+</html>
