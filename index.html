@@ -2,432 +2,548 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="theme-color" content="#071321">
 <title>Reef Aquarium Dashboard</title>
 <style>
 :root {
-  --bg:#071321; --panel:#102236; --panel2:#162c42;
-  --text:#edf5fc; --muted:#9bb0c4; --blue:#4bb8e8;
-  --green:#56d6a0; --orange:#ffbd69; --red:#ff7777;
+  --bg:#071321;--panel:#102236;--panel2:#162c42;
+  --text:#edf5fc;--muted:#9bb0c4;--blue:#4bb8e8;
+  --green:#56d6a0;--orange:#ffbd69;--red:#ff7777;
   --border:#263d53;
 }
-* {box-sizing:border-box}
-body {
-  margin:0; background:var(--bg); color:var(--text);
-  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
-}
-header {
-  padding:24px 18px 16px;
-  background:linear-gradient(135deg,#102b45,#071321);
-}
-header h1 {margin:0;font-size:25px}
-header p {margin:7px 0 0;color:var(--muted);font-size:13px}
-main {padding:14px;max-width:900px;margin:auto}
-nav {
-  display:flex;gap:7px;overflow-x:auto;padding:5px 0 14px;
-}
-nav button {
-  background:var(--panel2);color:var(--text);border:1px solid var(--border);
-  border-radius:10px;padding:10px 13px;white-space:nowrap;
-}
-nav button.active {background:var(--blue);color:#061321}
-h2 {font-size:19px;margin:12px 0}
-h3 {font-size:15px;margin:0 0 12px}
-.grid {
-  display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));
-  gap:10px;
-}
-.card {
-  background:var(--panel);border:1px solid var(--border);
-  border-radius:14px;padding:15px;margin-bottom:11px;
-}
-.metric {font-size:25px;font-weight:700;margin:7px 0}
-.muted {color:var(--muted);font-size:12px}
-.good {color:var(--green)}
-.warn {color:var(--orange)}
-.bad {color:var(--red)}
-button,.button {
-  cursor:pointer;border:0;border-radius:9px;padding:11px 14px;
-  background:var(--blue);color:#061321;font-weight:600;
-}
-button.secondary {background:var(--panel2);color:var(--text);border:1px solid var(--border)}
-input,select,textarea {
-  width:100%;padding:11px;margin:5px 0 12px;
-  border-radius:8px;border:1px solid var(--border);
-  background:#071827;color:var(--text);font-size:15px;
-}
-label {font-size:12px;color:var(--muted)}
-.row {display:flex;gap:8px;align-items:center;flex-wrap:wrap}
-.row button {margin:3px 0}
-.task {
-  display:flex;justify-content:space-between;align-items:center;
-  gap:10px;padding:11px 0;border-bottom:1px solid var(--border);
-}
-.task:last-child {border:0}
-.task input {width:auto;margin:0}
-.page {display:none}
-.page.active {display:block}
-canvas {width:100%;height:170px}
-footer {text-align:center;color:var(--muted);font-size:11px;padding:25px}
-.small {font-size:11px;color:var(--muted)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);
+font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+header{padding:24px 18px 16px;background:linear-gradient(135deg,#102b45,#071321)}
+header h1{margin:0;font-size:25px}
+header p{margin:7px 0 0;color:var(--muted);font-size:13px}
+main{padding:14px;max-width:900px;margin:auto}
+nav{display:flex;gap:7px;overflow-x:auto;padding:5px 0 14px}
+nav button{background:var(--panel2);color:var(--text);border:1px solid var(--border);
+border-radius:10px;padding:10px 13px;white-space:nowrap}
+nav button.active{background:var(--blue);color:#061321}
+h2{font-size:19px;margin:12px 0}
+h3{font-size:15px;margin:0 0 12px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(145px,1fr));gap:10px}
+.card{background:var(--panel);border:1px solid var(--border);
+border-radius:14px;padding:15px;margin-bottom:11px}
+.metric{font-size:25px;font-weight:700;margin:7px 0}
+.muted{color:var(--muted);font-size:12px}
+.good{color:var(--green)}
+.warn{color:var(--orange)}
+.bad{color:var(--red)}
+.status{font-size:11px;font-weight:700;margin-top:6px}
+button{cursor:pointer;border:0;border-radius:9px;padding:11px 14px;
+background:var(--blue);color:#061321;font-weight:600}
+button.secondary{background:var(--panel2);color:var(--text);border:1px solid var(--border)}
+input,select{width:100%;padding:11px;margin:5px 0 12px;
+border-radius:8px;border:1px solid var(--border);
+background:#071827;color:var(--text);font-size:15px}
+label{font-size:12px;color:var(--muted)}
+.row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.page{display:none}
+.page.active{display:block}
+canvas{width:100%;height:190px}
+.task{display:flex;justify-content:space-between;align-items:center;
+gap:10px;padding:11px 0;border-bottom:1px solid var(--border)}
+.task:last-child{border:0}
+.task button{padding:8px 10px}
+.task input{width:auto;margin:0}
+footer{text-align:center;color:var(--muted);font-size:11px;padding:25px}
+.small{font-size:11px;color:var(--muted)}
+hr{border:0;border-top:1px solid var(--border);margin:12px 0}
 </style>
 </head>
 <body>
 
 <header>
-  <h1>🐠 Reef Aquarium</h1>
-  <p>Red Sea Reefer 250 · Aquarium dashboard</p>
-  <p id="today"></p>
+<h1>🐠 Reef Aquarium</h1>
+<p>Red Sea Reefer 250 · Aquarium dashboard</p>
+<p id="today"></p>
 </header>
 
 <main>
 <nav>
-  <button class="active" onclick="showPage('overview',this)">Overview</button>
-  <button onclick="showPage('parameters',this)">Water tests</button>
-  <button onclick="showPage('equipment',this)">Equipment</button>
-  <button onclick="showPage('maintenance',this)">Maintenance</button>
-  <button onclick="showPage('settings',this)">Settings</button>
+<button class="active" onclick="showPage('overview',this)">Overview</button>
+<button onclick="showPage('parameters',this)">Water quality</button>
+<button onclick="showPage('equipment',this)">Equipment</button>
+<button onclick="showPage('maintenance',this)">Maintenance</button>
+<button onclick="showPage('settings',this)">Settings</button>
 </nav>
 
 <section id="overview" class="page active">
-  <h2>Tank overview</h2>
-  <div class="grid">
-    <div class="card">
-      <div class="muted">Temperature</div>
-      <div class="metric" id="temp">--</div>
-      <div class="small">°C · Manual reading</div>
-    </div>
-    <div class="card">
-      <div class="muted">Alkalinity</div>
-      <div class="metric" id="alk">--</div>
-      <div class="small">dKH · Latest test</div>
-    </div>
-    <div class="card">
-      <div class="muted">Nitrate</div>
-      <div class="metric" id="no3">--</div>
-      <div class="small">ppm · Latest test</div>
-    </div>
-    <div class="card">
-      <div class="muted">Phosphate</div>
-      <div class="metric" id="po4">--</div>
-      <div class="small">ppm · Latest test</div>
-    </div>
-  </div>
-
-  <div class="card">
-    <h3>Latest water test</h3>
-    <p id="lastTest" class="muted">No measurements recorded yet.</p>
-    <button onclick="showPage('parameters',document.querySelectorAll('nav button')[1])">Add measurement</button>
-  </div>
-
-  <div class="card">
-    <h3>Equipment status</h3>
-    <div id="equipmentSummary" class="muted"></div>
-  </div>
-
-  <div class="card">
-    <h3>Upcoming maintenance</h3>
-    <div id="maintenanceSummary"></div>
-  </div>
+<h2>Tank overview</h2>
+<div class="card">
+<h3>Water quality status</h3>
+<div id="overallStatus"></div>
+</div>
+<div class="grid" id="overviewMetrics"></div>
+<div class="card">
+<h3>Readings requiring attention</h3>
+<div id="alerts"></div>
+</div>
+<div class="card">
+<h3>Equipment status</h3>
+<div id="equipmentSummary" class="muted"></div>
+</div>
+<div class="card">
+<h3>Upcoming maintenance</h3>
+<div id="maintenanceSummary"></div>
+</div>
 </section>
 
 <section id="parameters" class="page">
-  <h2>Water measurements</h2>
-  <div class="card">
-    <h3>Add a measurement</h3>
-    <label>Date</label>
-    <input type="date" id="testDate">
-    <label>Parameter</label>
-    <select id="parameter">
-      <option value="alk">Alkalinity (dKH)</option>
-      <option value="no3">Nitrate (ppm)</option>
-      <option value="po4">Phosphate (ppm)</option>
-      <option value="ca">Calcium (ppm)</option>
-      <option value="mg">Magnesium (ppm)</option>
-      <option value="temp">Temperature (°C)</option>
-      <option value="salinity">Salinity (ppt)</option>
-      <option value="ph">pH</option>
-    </select>
-    <label>Reading</label>
-    <input type="number" id="reading" step="any" placeholder="Enter result">
-    <label>Notes (optional)</label>
-    <input id="testNotes" placeholder="Test kit, observations...">
-    <button onclick="addMeasurement()">Save measurement</button>
-  </div>
+<h2>Water quality</h2>
+<div class="card">
+<h3>Add a measurement</h3>
+<label>Date</label>
+<input type="date" id="testDate">
+<label>Parameter</label>
+<select id="parameter">
+<option value="alk">Alkalinity (dKH)</option>
+<option value="no3">Nitrate (ppm)</option>
+<option value="po4">Phosphate (ppm)</option>
+<option value="ca">Calcium (ppm)</option>
+<option value="mg">Magnesium (ppm)</option>
+<option value="salinity">Salinity (ppt)</option>
+<option value="temp">Temperature (°C)</option>
+<option value="ph">pH</option>
+</select>
+<label>Reading</label>
+<input type="number" id="reading" step="any" placeholder="Enter result">
+<label>Notes (optional)</label>
+<input id="testNotes" placeholder="Test kit, observations...">
+<button onclick="addMeasurement()">Save measurement</button>
+</div>
 
-  <div class="card">
-    <h3>Measurement history</h3>
-    <canvas id="chart" width="700" height="190"></canvas>
-    <div id="history"></div>
-  </div>
+<div class="card">
+<h3>Parameter trend</h3>
+<label>Select parameter to view</label>
+<select id="chartParameter" onchange="renderHistory()">
+<option value="alk">Alkalinity</option>
+<option value="no3">Nitrate</option>
+<option value="po4">Phosphate</option>
+<option value="ca">Calcium</option>
+<option value="mg">Magnesium</option>
+<option value="salinity">Salinity</option>
+<option value="temp">Temperature</option>
+<option value="ph">pH</option>
+</select>
+<div id="chartTarget" class="muted"></div>
+<canvas id="chart" width="700" height="200"></canvas>
+</div>
+
+<div class="card">
+<h3>Measurement history</h3>
+<div id="history"></div>
+</div>
 </section>
 
 <section id="equipment" class="page">
-  <h2>Equipment</h2>
-  <p class="muted">Update status manually. This dashboard does not currently connect directly to equipment apps.</p>
-  <div id="equipmentList"></div>
+<h2>Equipment</h2>
+<p class="muted">Equipment status is currently updated manually.</p>
+<div id="equipmentList"></div>
 </section>
 
 <section id="maintenance" class="page">
-  <h2>Maintenance schedule</h2>
-  <div class="card">
-    <h3>Add a maintenance task</h3>
-    <label>Task</label>
-    <input id="taskName" placeholder="e.g. Clean skimmer">
-    <label>Repeat every (days)</label>
-    <input type="number" id="taskDays" value="7" min="1">
-    <button onclick="addTask()">Add task</button>
-  </div>
-  <div class="card">
-    <h3>Tasks</h3>
-    <div id="taskList"></div>
-  </div>
+<h2>Maintenance schedule</h2>
+<div class="card">
+<h3>Add a maintenance task</h3>
+<label>Task</label>
+<input id="taskName" placeholder="e.g. Clean skimmer">
+<label>Repeat every (days)</label>
+<input type="number" id="taskDays" value="7" min="1">
+<button onclick="addTask()">Add task</button>
+</div>
+<div class="card">
+<h3>Tasks</h3>
+<div id="taskList"></div>
+</div>
 </section>
 
 <section id="settings" class="page">
-  <h2>Settings and backup</h2>
-  <div class="card">
-    <h3>Tank details</h3>
-    <p>Red Sea Reefer 250 · Approx. 250 litres</p>
-    <p class="muted">Dashboard data is saved locally in this browser on this iPad.</p>
-  </div>
-  <div class="card">
-    <h3>Backup your data</h3>
-    <p class="muted">Download a backup of measurements, equipment and maintenance tasks.</p>
-    <button onclick="exportData()">Export backup</button>
-    <label>Restore from backup</label>
-    <input type="file" id="importFile" accept=".json">
-    <button onclick="importData()">Import backup</button>
-  </div>
-  <div class="card">
-    <h3>Important</h3>
-    <p class="muted">This is a manual-entry dashboard. It does not yet receive live readings from ReefBeat, Mobius, Xepta, INKBIRD or Reef Factory. Values displayed here are only those you enter.</p>
-  </div>
+<h2>Settings and backup</h2>
+<div class="card">
+<h3>Tank details</h3>
+<p>Red Sea Reefer 250 · Approx. 250 litres</p>
+<p class="muted">Water-quality targets are guidance ranges. Stability and consistency are important, particularly for SPS corals.</p>
+</div>
+<div class="card">
+<h3>Water-quality targets</h3>
+<div id="targetList"></div>
+<p class="small">Targets are built into this version of the dashboard.</p>
+</div>
+<div class="card">
+<h3>Backup your data</h3>
+<p class="muted">Download a backup of measurements, equipment and maintenance tasks.</p>
+<button onclick="exportData()">Export backup</button>
+<hr>
+<label>Restore from backup</label>
+<input type="file" id="importFile" accept=".json">
+<button onclick="importData()">Import backup</button>
+</div>
+<div class="card">
+<h3>Automation status</h3>
+<p class="muted">This dashboard does not yet connect directly to ReefBeat, Mobius, Xepta, INKBIRD or Reef Factory. Readings and equipment statuses must currently be entered manually.</p>
+</div>
 </section>
-
 </main>
+
 <footer>Reef Aquarium Dashboard · Data stored on this device</footer>
 
 <script>
-const defaults = [
-  "ReefMat 500","ReefDose","Xepta autoBalance",
-  "Reef Factory Level Keeper","AI lights",
-  "Ecotech Vectra S2","Ecotech MP40 left",
-  "Ecotech MP40 right","INKBIRD temperature controller"
-];
-
-let data = JSON.parse(localStorage.getItem("reefData") || "null") || {
-  measurements:[],
-  equipment:defaults.map(name=>({name,status:"OK"})),
-  tasks:[
-    {name:"Check temperature",days:1,last:today()},
-    {name:"Check salinity",days:7,last:""},
-    {name:"Clean glass",days:3,last:""},
-    {name:"Check alkalinity",days:2,last:""},
-    {name:"Clean skimmer",days:7,last:""},
-    {name:"Water change",days:14,last:""}
-  ]
+const targets={
+ alk:{name:"Alkalinity",unit:"dKH",low:7.5,high:9,warningLow:7,warningHigh:9.5},
+ no3:{name:"Nitrate",unit:"ppm",low:2,high:15,warningLow:1,warningHigh:20},
+ po4:{name:"Phosphate",unit:"ppm",low:0.03,high:0.10,warningLow:0.02,warningHigh:0.15},
+ ca:{name:"Calcium",unit:"ppm",low:400,high:450,warningLow:380,warningHigh:480},
+ mg:{name:"Magnesium",unit:"ppm",low:1250,high:1400,warningLow:1200,warningHigh:1450},
+ salinity:{name:"Salinity",unit:"ppt",low:34,high:36,warningLow:33,warningHigh:37},
+ temp:{name:"Temperature",unit:"°C",low:24,high:26,warningLow:23.5,warningHigh:26.5},
+ ph:{name:"pH",unit:"",low:7.8,high:8.4,warningLow:7.7,warningHigh:8.5}
 };
 
-function today() {
-  const d=new Date();
-  return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");
+const defaults=[
+"ReefMat 500","ReefDose","Xepta autoBalance",
+"Reef Factory Level Keeper","AI lights",
+"Ecotech Vectra S2","Ecotech MP40 left",
+"Ecotech MP40 right","INKBIRD temperature controller"
+];
+
+// Keep the existing storage key and data structure.
+let data;
+try{
+ data=JSON.parse(localStorage.getItem("reefData")||"null");
+}catch(e){data=null;}
+
+if(!data || !Array.isArray(data.measurements)){
+ data={measurements:[],equipment:[],tasks:[]};
+}
+if(!Array.isArray(data.equipment))data.equipment=[];
+if(!Array.isArray(data.tasks))data.tasks=[];
+
+defaults.forEach(name=>{
+ if(!data.equipment.some(e=>e.name===name)){
+  data.equipment.push({name,status:"OK"});
+ }
+});
+
+function today(){
+ const d=new Date();
+ return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");
 }
 
-document.getElementById("today").textContent =
-  new Date().toLocaleDateString(undefined,{weekday:"long",year:"numeric",month:"long",day:"numeric"});
+document.getElementById("today").textContent=
+ new Date().toLocaleDateString(undefined,{
+ weekday:"long",year:"numeric",month:"long",day:"numeric"
+ });
 document.getElementById("testDate").value=today();
 
-function save() {
-  localStorage.setItem("reefData",JSON.stringify(data));
-  render();
+function save(){
+ localStorage.setItem("reefData",JSON.stringify(data));
+ render();
 }
 
-function showPage(id,btn) {
-  document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));
-  document.getElementById(id).classList.add("active");
-  document.querySelectorAll("nav button").forEach(b=>b.classList.remove("active"));
-  btn.classList.add("active");
-  render();
+function showPage(id,btn){
+ document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));
+ document.getElementById(id).classList.add("active");
+ document.querySelectorAll("nav button").forEach(b=>b.classList.remove("active"));
+ btn.classList.add("active");
+ render();
 }
 
-function addMeasurement() {
-  const parameter=document.getElementById("parameter").value;
-  const value=parseFloat(document.getElementById("reading").value);
-  if(!Number.isFinite(value)) {alert("Please enter a valid reading.");return;}
-  data.measurements.push({
-    parameter,value,
-    date:document.getElementById("testDate").value || today(),
-    notes:document.getElementById("testNotes").value
-  });
-  document.getElementById("reading").value="";
-  document.getElementById("testNotes").value="";
-  save();
-  alert("Measurement saved.");
+function latest(key){
+ return data.measurements
+ .filter(m=>m.parameter===key)
+ .sort((a,b)=>b.date.localeCompare(a.date))[0];
 }
 
-function latest(key) {
-  return data.measurements.filter(m=>m.parameter===key)
-    .sort((a,b)=>b.date.localeCompare(a.date))[0];
+function statusFor(key,value){
+ const t=targets[key];
+ if(value<t.warningLow || value>t.warningHigh)return "bad";
+ if(value<t.low || value>t.high)return "warn";
+ return "good";
 }
 
-function displayLatest(key,id,digits=2) {
-  const m=latest(key);
-  document.getElementById(id).textContent=m ? Number(m.value).toFixed(digits) : "--";
+function statusText(status){
+ if(status==="bad")return "OUTSIDE SAFE RANGE";
+ if(status==="warn")return "OUTSIDE TARGET";
+ return "WITHIN TARGET";
 }
 
-function renderOverview() {
-  displayLatest("temp","temp",1);
-  displayLatest("alk","alk",2);
-  displayLatest("no3","no3",1);
-  displayLatest("po4","po4",3);
-  const all=data.measurements.slice().sort((a,b)=>b.date.localeCompare(a.date));
-  document.getElementById("lastTest").textContent=all.length
-    ? all[0].date+" · "+all[0].parameter.toUpperCase()+" · "+all[0].value
-    : "No measurements recorded yet.";
-  const ok=data.equipment.filter(e=>e.status==="OK").length;
-  document.getElementById("equipmentSummary").textContent=
-    ok+" of "+data.equipment.length+" items marked OK.";
-  const due=data.tasks.filter(t=>isDue(t)).length;
-  document.getElementById("maintenanceSummary").textContent=
-    due ? due+" task(s) due." : "No maintenance currently due.";
+function addMeasurement(){
+ const key=document.getElementById("parameter").value;
+ const value=parseFloat(document.getElementById("reading").value);
+ if(!Number.isFinite(value)){
+  alert("Please enter a valid reading.");return;
+ }
+ data.measurements.push({
+  parameter:key,
+  value:value,
+  date:document.getElementById("testDate").value||today(),
+  notes:document.getElementById("testNotes").value
+ });
+ document.getElementById("reading").value="";
+ document.getElementById("testNotes").value="";
+ save();
+ alert("Measurement saved.");
 }
 
-function renderHistory() {
-  const history=document.getElementById("history");
-  history.innerHTML="";
-  data.measurements.slice().sort((a,b)=>b.date.localeCompare(a.date)).forEach((m)=>{
-    const div=document.createElement("div");
-    div.className="task";
-    const info=document.createElement("span");
-    info.textContent=m.date+" · "+m.parameter.toUpperCase()+" · "+m.value+(m.notes?" · "+m.notes:"");
-    const del=document.createElement("button");
-    del.className="secondary";
-    del.textContent="Delete";
-    del.onclick=()=>{if(confirm("Delete this measurement?")){data.measurements.splice(data.measurements.indexOf(m),1);save();}};
-    div.append(info,del);
-    history.appendChild(div);
-  });
-  drawChart();
-}
+function renderOverview(){
+ const metrics=document.getElementById("overviewMetrics");
+ metrics.innerHTML="";
+ let measured=0,attention=0,alerts=[];
 
-function drawChart() {
-  const canvas=document.getElementById("chart");
-  const ctx=canvas.getContext("2d");
-  ctx.clearRect(0,0,canvas.width,canvas.height);
-  const key=document.getElementById("parameter").value;
-  const points=data.measurements.filter(m=>m.parameter===key)
-    .sort((a,b)=>a.date.localeCompare(b.date));
-  if(!points.length) {
-    ctx.fillStyle="#9bb0c4";
-    ctx.font="14px sans-serif";
-    ctx.fillText("Add measurements to see a trend chart",15,35);
-    return;
+ Object.keys(targets).forEach(key=>{
+  const t=targets[key],m=latest(key);
+  if(!m)return;
+  measured++;
+  const status=statusFor(key,Number(m.value));
+  if(status!=="good"){
+   attention++;
+   alerts.push({key,m,status});
   }
-  const vals=points.map(p=>Number(p.value));
-  const min=Math.min(...vals),max=Math.max(...vals);
-  const range=max-min || 1;
-  ctx.strokeStyle="#4bb8e8";ctx.lineWidth=3;ctx.beginPath();
-  points.forEach((p,i)=>{
-    const x=25+(i/(Math.max(points.length-1,1)))*640;
-    const y=155-((Number(p.value)-min)/range)*125;
-    if(i===0)ctx.moveTo(x,y);else ctx.lineTo(x,y);
+  const card=document.createElement("div");
+  card.className="card";
+  const name=document.createElement("div");
+  name.className="muted";name.textContent=t.name;
+  const value=document.createElement("div");
+  value.className="metric "+status;
+  value.textContent=m.value+" "+t.unit;
+  const state=document.createElement("div");
+  state.className="status "+status;
+  state.textContent=statusText(status);
+  const date=document.createElement("div");
+  date.className="small";date.textContent="Tested "+m.date;
+  card.append(name,value,state,date);
+  metrics.appendChild(card);
+ });
+
+ const overall=document.getElementById("overallStatus");
+ if(!measured){
+  overall.textContent="No measurements recorded yet.";
+ }else if(attention===0){
+  overall.innerHTML='<span class="good">● All recorded readings are within target ranges.</span>';
+ }else{
+  overall.innerHTML='<span class="warn">● '+attention+' parameter(s) need attention.</span>';
+ }
+
+ const alertBox=document.getElementById("alerts");
+ alertBox.innerHTML="";
+ if(!alerts.length){
+  alertBox.textContent=measured?"No readings outside target ranges.":"Add your first water test to see alerts.";
+ }else{
+  alerts.forEach(a=>{
+   const t=targets[a.key];
+   const div=document.createElement("div");
+   div.className="task";
+   const label=document.createElement("span");
+   label.className=a.status;
+   label.textContent=t.name+": "+a.m.value+" "+t.unit+
+    " (target "+t.low+"–"+t.high+")";
+   div.appendChild(label);alertBox.appendChild(div);
   });
-  ctx.stroke();
-  ctx.fillStyle="#edf5fc";ctx.font="12px sans-serif";
-  points.forEach((p,i)=>{
-    const x=25+(i/(Math.max(points.length-1,1)))*640;
-    const y=155-((Number(p.value)-min)/range)*125;
-    ctx.beginPath();ctx.arc(x,y,4,0,Math.PI*2);ctx.fill();
-  });
-  ctx.fillText("Min: "+min+"  Max: "+max,15,180);
+ }
+
+ const ok=data.equipment.filter(e=>e.status==="OK").length;
+ const equipment=document.getElementById("equipmentSummary");
+ equipment.textContent=ok+" of "+data.equipment.length+" items marked OK.";
+
+ const due=data.tasks.filter(t=>isDue(t)).length;
+ document.getElementById("maintenanceSummary").textContent=
+  due?due+" maintenance task(s) due.":"No maintenance currently due.";
 }
 
-function renderEquipment() {
-  const el=document.getElementById("equipmentList");
-  el.innerHTML="";
-  data.equipment.forEach((e)=>{
-    const card=document.createElement("div");card.className="card";
-    const title=document.createElement("h3");title.textContent=e.name;
-    const select=document.createElement("select");
-    ["OK","Attention","Offline"].forEach(s=>{
-      const opt=document.createElement("option");opt.value=s;opt.textContent=s;
-      select.appendChild(opt);
-    });
-    select.value=e.status;
-    select.onchange=()=>{e.status=select.value;save();};
-    card.append(title,select);
-    el.appendChild(card);
-  });
-}
-
-function isDue(t) {
-  if(!t.last)return true;
-  const last=new Date(t.last+"T00:00:00");
-  const now=new Date(today()+"T00:00:00");
-  return (now-last)/(1000*60*60*24)>=Number(t.days);
-}
-
-function addTask() {
-  const name=document.getElementById("taskName").value.trim();
-  const days=parseInt(document.getElementById("taskDays").value,10);
-  if(!name || !days || days<1){alert("Enter a task and repeat interval.");return;}
-  data.tasks.push({name,days,last:""});
-  document.getElementById("taskName").value="";
-  save();
-}
-
-function renderTasks() {
-  const el=document.getElementById("taskList");
-  el.innerHTML="";
-  data.tasks.forEach((t)=>{
-    const div=document.createElement("div");div.className="task";
-    const left=document.createElement("div");
-    const name=document.createElement("strong");name.textContent=t.name;
-    const detail=document.createElement("div");detail.className="small";
-    detail.textContent="Every "+t.days+" day(s) · "+(isDue(t)?"DUE":"Up to date");
-    left.append(name,detail);
-    const done=document.createElement("button");
-    done.textContent="Done";
-    done.onclick=()=>{t.last=today();save();};
-    const del=document.createElement("button");
-    del.className="secondary";del.textContent="×";
-    del.onclick=()=>{if(confirm("Delete task?")){data.tasks.splice(data.tasks.indexOf(t),1);save();}};
-    const actions=document.createElement("div");actions.className="row";
-    actions.append(done,del);
-    div.append(left,actions);el.appendChild(div);
-  });
-}
-
-function render() {
-  renderOverview();
-  renderHistory();
-  renderEquipment();
-  renderTasks();
-}
-function exportData() {
-  const blob=new Blob([JSON.stringify(data,null,2)],{type:"application/json"});
-  const url=URL.createObjectURL(blob);
-  const a=document.createElement("a");
-  a.href=url;a.download="reef-aquarium-backup.json";a.click();
-  URL.revokeObjectURL(url);
-}
-function importData() {
-  const file=document.getElementById("importFile").files[0];
-  if(!file){alert("Choose a backup file first.");return;}
-  const reader=new FileReader();
-  reader.onload=()=>{
-    try {
-      const imported=JSON.parse(reader.result);
-      if(!imported.measurements || !imported.equipment || !imported.tasks)throw new Error();
-      data=imported;save();alert("Backup restored.");
-    } catch(e) {alert("That backup file is not valid.");}
+function renderHistory(){
+ const history=document.getElementById("history");
+ history.innerHTML="";
+ data.measurements.slice()
+ .sort((a,b)=>b.date.localeCompare(a.date))
+ .forEach(m=>{
+  const div=document.createElement("div");
+  div.className="task";
+  const info=document.createElement("span");
+  const t=targets[m.parameter];
+  info.textContent=m.date+" · "+(t?t.name:m.parameter)+" · "+
+   m.value+(t?" "+t.unit:"")+(m.notes?" · "+m.notes:"");
+  const del=document.createElement("button");
+  del.className="secondary";del.textContent="Delete";
+  del.onclick=()=>{
+   if(confirm("Delete this measurement?")){
+    data.measurements.splice(data.measurements.indexOf(m),1);save();
+   }
   };
-  reader.readAsText(file);
+  div.append(info,del);history.appendChild(div);
+ });
+ drawChart();
 }
 
-document.getElementById("parameter").addEventListener("change",drawChart);
+function drawChart(){
+ const canvas=document.getElementById("chart");
+ const ctx=canvas.getContext("2d");
+ ctx.clearRect(0,0,canvas.width,canvas.height);
+ const key=document.getElementById("chartParameter").value;
+ const t=targets[key];
+ const points=data.measurements
+  .filter(m=>m.parameter===key)
+  .sort((a,b)=>a.date.localeCompare(b.date));
+
+ document.getElementById("chartTarget").textContent=
+  "Target: "+t.low+"–"+t.high+" "+t.unit;
+
+ if(!points.length){
+  ctx.fillStyle="#9bb0c4";ctx.font="14px sans-serif";
+  ctx.fillText("No measurements recorded for this parameter.",15,35);
+  return;
+ }
+
+ const vals=points.map(p=>Number(p.value));
+ let min=Math.min(...vals,t.low),max=Math.max(...vals,t.high);
+ if(min===max){min-=1;max+=1;}
+ const pad=(max-min)*0.12;
+ min-=pad;max+=pad;
+ const xFor=i=>25+(i/Math.max(points.length-1,1))*640;
+ const yFor=v=>165-((v-min)/(max-min))*135;
+
+ // Target range shading
+ ctx.fillStyle="rgba(86,214,160,0.10)";
+ const top=yFor(t.high),bottom=yFor(t.low);
+ ctx.fillRect(20,top,650,bottom-top);
+
+ // Target boundary lines
+ ctx.strokeStyle="rgba(86,214,160,0.65)";
+ ctx.setLineDash([5,5]);
+ [t.low,t.high].forEach(v=>{
+  ctx.beginPath();ctx.moveTo(20,yFor(v));ctx.lineTo(675,yFor(v));ctx.stroke();
+ });
+ ctx.setLineDash([]);
+
+ // Measurement line
+ ctx.strokeStyle="#4bb8e8";ctx.lineWidth=3;ctx.beginPath();
+ points.forEach((p,i)=>{
+  const x=xFor(i),y=yFor(Number(p.value));
+  if(i===0)ctx.moveTo(x,y);else ctx.lineTo(x,y);
+ });
+ ctx.stroke();
+
+ // Measurement points
+ points.forEach((p,i)=>{
+  const x=xFor(i),y=yFor(Number(p.value));
+  ctx.fillStyle="#edf5fc";
+  ctx.beginPath();ctx.arc(x,y,4,0,Math.PI*2);ctx.fill();
+ });
+ ctx.fillStyle="#9bb0c4";ctx.font="11px sans-serif";
+ ctx.fillText("Latest: "+points[points.length-1].value+" "+t.unit,20,190);
+}
+
+function renderEquipment(){
+ const el=document.getElementById("equipmentList");
+ el.innerHTML="";
+ data.equipment.forEach(e=>{
+  const card=document.createElement("div");card.className="card";
+  const title=document.createElement("h3");title.textContent=e.name;
+  const select=document.createElement("select");
+  ["OK","Attention","Offline"].forEach(s=>{
+   const opt=document.createElement("option");
+   opt.value=s;opt.textContent=s;select.appendChild(opt);
+  });
+  select.value=e.status||"OK";
+  select.onchange=()=>{e.status=select.value;save();};
+  card.append(title,select);el.appendChild(card);
+ });
+}
+
+function isDue(t){
+ if(!t.last)return true;
+ const last=new Date(t.last+"T00:00:00");
+ const now=new Date(today()+"T00:00:00");
+ return (now-last)/(1000*60*60*24)>=Number(t.days);
+}
+
+function addTask(){
+ const name=document.getElementById("taskName").value.trim();
+ const days=parseInt(document.getElementById("taskDays").value,10);
+ if(!name||!days||days<1){
+  alert("Enter a task and repeat interval.");return;
+ }
+ data.tasks.push({name,days,last:""});
+ document.getElementById("taskName").value="";
+ save();
+}
+
+function renderTasks(){
+ const el=document.getElementById("taskList");
+ el.innerHTML="";
+ data.tasks.forEach(t=>{
+  const div=document.createElement("div");div.className="task";
+  const left=document.createElement("div");
+  const name=document.createElement("strong");name.textContent=t.name;
+  const detail=document.createElement("div");detail.className="small";
+  detail.textContent="Every "+t.days+" day(s) · "+(isDue(t)?"DUE":"Up to date");
+  left.append(name,detail);
+  const done=document.createElement("button");done.textContent="Done";
+  done.onclick=()=>{t.last=today();save();};
+  const del=document.createElement("button");
+  del.className="secondary";del.textContent="×";
+  del.onclick=()=>{
+   if(confirm("Delete task?")){
+    data.tasks.splice(data.tasks.indexOf(t),1);save();
+   }
+  };
+  const actions=document.createElement("div");actions.className="row";
+  actions.append(done,del);div.append(left,actions);el.appendChild(div);
+ });
+}
+
+function renderTargets(){
+ const el=document.getElementById("targetList");
+ el.innerHTML="";
+ Object.keys(targets).forEach(key=>{
+  const t=targets[key];
+  const div=document.createElement("div");
+  div.className="task";
+  const name=document.createElement("strong");name.textContent=t.name;
+  const range=document.createElement("span");
+  range.className="muted";
+  range.textContent=t.low+"–"+t.high+" "+t.unit;
+  div.append(name,range);el.appendChild(div);
+ });
+}
+
+function render(){
+ renderOverview();
+ renderHistory();
+ renderEquipment();
+ renderTasks();
+ renderTargets();
+}
+
+function exportData(){
+ const blob=new Blob([JSON.stringify(data,null,2)],{type:"application/json"});
+ const url=URL.createObjectURL(blob);
+ const a=document.createElement("a");
+ a.href=url;a.download="reef-aquarium-backup.json";a.click();
+ URL.revokeObjectURL(url);
+}
+
+function importData(){
+ const file=document.getElementById("importFile").files[0];
+ if(!file){alert("Choose a backup file first.");return;}
+ const reader=new FileReader();
+ reader.onload=()=>{
+  try{
+   const imported=JSON.parse(reader.result);
+   if(!Array.isArray(imported.measurements)||
+      !Array.isArray(imported.equipment)||
+      !Array.isArray(imported.tasks))throw new Error();
+   data=imported;save();alert("Backup restored.");
+  }catch(e){alert("That backup file is not valid.");}
+ };
+ reader.readAsText(file);
+}
+
+document.getElementById("chartParameter").addEventListener("change",drawChart);
 render();
 </script>
 </body>
