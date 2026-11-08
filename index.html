@@ -68,6 +68,7 @@ hr{border:0;border-top:1px solid var(--border);margin:12px 0}
 <button class="active" onclick="showPage('overview',this)">Overview</button>
 <button onclick="showPage('parameters',this)">Water quality</button>
 <button onclick="showPage('equipment',this)">Equipment</button>
+  <button onclick="showPage('redsea',this)">Red Sea</button>
 <button onclick="showPage('maintenance',this)">Maintenance</button>
 <button onclick="showPage('settings',this)">Settings</button>
 </nav>
@@ -161,7 +162,26 @@ hr{border:0;border-top:1px solid var(--border);margin:12px 0}
 <div id="taskList"></div>
 </div>
 </section>
+<section id="redsea" class="page">
+  <h2>Red Sea equipment</h2>
 
+  <div class="card">
+    <h3>Connection status</h3>
+    <p class="warn">Snapshot data retrieved 8 November 2026 — not updating automatically.</p>
+    <p class="muted">ReefDose 4</p>
+    <p class="muted">ReefMat 500</p>
+  </div>
+
+  <div class="card">
+    <h3>ReefDose 4</h3>
+    <div id="doseHeads" class="grid"></div>
+  </div>
+
+  <div class="card">
+    <h3>ReefMat 500</h3>
+    <div id="reefMatStatus" class="grid"></div>
+  </div>
+</section>
 <section id="settings" class="page">
 <h2>Settings and backup</h2>
 <div class="card">
@@ -510,11 +530,88 @@ function renderTargets(){
   div.append(name,range);el.appendChild(div);
  });
 }
+const redSeaSnapshot = {
+  doseHeads: [
+    {head:1,name:"AminoPlus",brand:"Zlements",remaining:690.84,today:5,state:"on",schedule:"06:00–22:00 daily"},
+    {head:2,name:"Phytoplankton",brand:"Phytoplankton",remaining:49.04,today:9,state:"on",schedule:"00:00–08:00 and 18:00–23:59 daily"},
+    {head:3,name:"Not configured",remaining:0,today:0,state:"not-setup"},
+    {head:4,name:"Not configured",remaining:0,today:0,state:"not-setup"}
+  ],
+  reefMat: {
+    days:15,remaining:146.4,today:0.6,average:9.3,total:1034.9,
+    mode:"Auto",advancing:false,roll:"Full",
+    internet:true,ec:true,unclean:false
+  }
+};
 
+function renderRedSea(){
+  const heads=document.getElementById("doseHeads");
+  const mat=document.getElementById("reefMatStatus");
+  if(!heads || !mat) return;
+
+  heads.innerHTML="";
+  redSeaSnapshot.doseHeads.forEach(h=>{
+    const card=document.createElement("div");
+    card.className="card";
+
+    const title=document.createElement("h3");
+    title.textContent="Head "+h.head+" · "+h.name;
+
+    const status=document.createElement("p");
+    status.textContent=h.state==="on"?"Active":"Not configured";
+
+    const details=document.createElement("p");
+    details.textContent=h.brand?"Brand: "+h.brand:"No supplement assigned";
+
+    const volume=document.createElement("p");
+    volume.textContent="Reported container volume: "+h.remaining.toFixed(2)+" ml";
+
+    const daily=document.createElement("p");
+    daily.textContent="Today's automatic dose: "+h.today+" ml";
+
+    const schedule=document.createElement("p");
+    schedule.textContent=h.schedule||"No schedule";
+
+    card.append(title,status,details,volume,daily,schedule);
+    heads.appendChild(card);
+  });
+
+  const m=redSeaSnapshot.reefMat;
+  mat.innerHTML="";
+
+  const metrics=[
+    ["Estimated days remaining",m.days+" days"],
+    ["Roll remaining",m.remaining+" cm"],
+    ["Today's usage",m.today+" cm"],
+    ["Daily average usage",m.average+" cm"],
+    ["Total usage",m.total+" cm"],
+    ["Roll level",m.roll],
+    ["Operating mode",m.mode],
+    ["Currently advancing",m.advancing?"Yes":"No"],
+    ["Internet connection",m.internet?"Connected":"Disconnected"],
+    ["EC sensor",m.ec?"Connected":"Disconnected"],
+    ["Unclean sensor",m.unclean?"Triggered":"Clear"]
+  ];
+
+  metrics.forEach(item=>{
+    const card=document.createElement("div");
+    card.className="card";
+
+    const label=document.createElement("p");
+    label.textContent=item[0];
+
+    const value=document.createElement("h3");
+    value.textContent=item[1];
+
+    card.append(label,value);
+    mat.appendChild(card);
+  });
+}
 function render(){
  renderOverview();
  renderHistory();
  renderEquipment();
+ renderRedSea();
  renderTasks();
  renderTargets();
 }
