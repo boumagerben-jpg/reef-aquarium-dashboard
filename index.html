@@ -26,6 +26,9 @@ nav button.active{background:var(--blue);color:#061321}
 h2{font-size:19px;margin:12px 0}
 h3{font-size:15px;margin:0 0 12px}
 .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(145px,1fr));gap:10px}
+.quick-grid{grid-template-columns:repeat(3,minmax(0,1fr))}
+.quick-button{min-height:54px;padding:10px 6px;font-size:13px}
+@media(max-width:480px){.quick-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
 .card{background:var(--panel);border:1px solid var(--border);
 border-radius:14px;padding:15px;margin-bottom:11px}
 .metric{font-size:25px;font-weight:700;margin:7px 0}
@@ -75,6 +78,20 @@ hr{border:0;border-top:1px solid var(--border);margin:12px 0}
 
 <section id="overview" class="page active">
 <h2>Tank overview</h2>
+<div class="card">
+<h3>Quick access</h3>
+<div class="grid quick-grid">
+<button class="secondary quick-button" onclick="openParameter('temp')">Temperature</button>
+<button class="secondary quick-button" onclick="openEquipment('Reef Factory Level Keeper')">Water level</button>
+<button class="secondary quick-button" onclick="openDoser(1)">Doser 1</button>
+<button class="secondary quick-button" onclick="openDoser(2)">Doser 2</button>
+<button class="secondary quick-button" onclick="openDoser(3)">Doser 3</button>
+<button class="secondary quick-button" onclick="openDoser(4)">Doser 4</button>
+<button class="secondary quick-button" onclick="openParameter('ph')">pH</button>
+<button class="secondary quick-button" onclick="openParameter('alk')">KH</button>
+<button class="secondary quick-button" onclick="openReefMat()">ReefMat</button>
+</div>
+</div>
 <div class="card">
 <h3>Water quality status</h3>
 <div id="overallStatus"></div>
@@ -271,6 +288,33 @@ function showPage(id,btn){
  document.querySelectorAll("nav button").forEach(b=>b.classList.remove("active"));
  btn.classList.add("active");
  render();
+}
+
+function openParameter(key){
+ const navButton=[...document.querySelectorAll("nav button")].find(b=>b.textContent.trim()==="Water quality");
+ showPage("parameters",navButton);
+ document.getElementById("parameter").value=key;
+ document.getElementById("chartParameter").value=key;
+ renderHistory();
+ document.getElementById("parameter").scrollIntoView({behavior:"smooth",block:"start"});
+}
+function openEquipment(name){
+ const navButton=[...document.querySelectorAll("nav button")].find(b=>b.textContent.trim()==="Equipment");
+ showPage("equipment",navButton);
+ const card=[...document.querySelectorAll("#equipmentList .card")].find(c=>c.querySelector("h3")?.textContent===name);
+ if(card)card.scrollIntoView({behavior:"smooth",block:"center"});
+}
+function openDoser(head){
+ const navButton=[...document.querySelectorAll("nav button")].find(b=>b.textContent.trim()==="Red Sea");
+ showPage("redsea",navButton);
+ const card=document.getElementById("doser-head-"+head);
+ if(card)card.scrollIntoView({behavior:"smooth",block:"center"});
+}
+function openReefMat(){
+ const navButton=[...document.querySelectorAll("nav button")].find(b=>b.textContent.trim()==="Red Sea");
+ showPage("redsea",navButton);
+ const card=document.getElementById("reefmat-card");
+ if(card)card.scrollIntoView({behavior:"smooth",block:"start"});
 }
 
 function latest(key){
@@ -553,6 +597,7 @@ function renderRedSea(){
   redSeaSnapshot.doseHeads.forEach(h=>{
     const card=document.createElement("div");
     card.className="card";
+    card.id="doser-head-"+h.head;
 
     const title=document.createElement("h3");
     title.textContent="Head "+h.head+" · "+h.name;
@@ -578,6 +623,7 @@ function renderRedSea(){
 
   const m=redSeaSnapshot.reefMat;
   mat.innerHTML="";
+  mat.parentElement.id="reefmat-card";
 
   const metrics=[
     ["Estimated days remaining",m.days+" days"],
